@@ -6,10 +6,12 @@ import torch.nn.functional as F
 
 from .model import QNetwork
 from .buffer import ReplayBuffer
-from .constants import LR
+from .constants import LR, GAMMA, TAU
 
 
 class DQN:
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     def __init__(self, num_actions, state_size):
         self.num_actions = num_actions
@@ -43,14 +45,17 @@ class DQN:
     def save_transition(self, transition:Tuple):
         self.buffer.add(*transition)
 
-    def update_q_networks(self, epsilon):
+    def update_q_networks(self):
         state, action, rew, next_state, done = self.buffer.sample()
-        td_target = rew + self.gamma*(1-done)*self.q_network_target(next_state).detach().max(-1)
+        td_target = rew + GAMMA*(1-done)*self.q_network_target(next_state).detach().max(-1)
         q_val = self.q_network(state).gather(-1, action)
-        td_error = F.mse_loss(q_val,td_target)
+        td_error = F.mse_loss(q_val, td_target)
         self.optimizer.zero_grad()
         td_error.backward()
         self.optimizer.step()
         # update target network
+        for target_param, local_param in zip(self.q_network_target.parameters(), self.q_network.parameters()):
+            target_param.data.copy_(TAU * local_param.data + (1.0 - TAU) * target_param.data)
+
 
 

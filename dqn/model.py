@@ -9,11 +9,11 @@ class QNetwork(torch.nn.Module):
     num_inputs = 37
     num_actions = 4
 
-    def __init__(self, hidden_dim: int = 64):
+    def __init__(self, num_inputs=37, num_actions=4, hidden_dim: int = 64):
         super().__init__()
-        self.layer1 = torch.nn.Linear(self.num_inputs, hidden_dim)
+        self.layer1 = torch.nn.Linear(num_inputs, hidden_dim)
         self.layer2 = torch.nn.Linear(hidden_dim, hidden_dim)
-        self.adv_layer = torch.nn.Linear(hidden_dim, self.num_actions)
+        self.adv_layer = torch.nn.Linear(hidden_dim, num_actions)
         self.val_layer = torch.nn.Linear(hidden_dim, 1)
 
     def forward(self, x: FloatTensor):

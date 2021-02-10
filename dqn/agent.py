@@ -21,7 +21,7 @@ class DQN:
         self.policy = defaultdict(lambda : (1/num_actions)*np.ones((num_actions,)))
         self.optimizer = torch.optim.Adam(self.q_network.parameters(), lr=LR)
 
-    def take_action(self, state:np.ndarray, epsilon=0):
+    def take_action(self, state:np.ndarray, train=False, epsilon=0):
         # obtain q values
         state = torch.FloatTensor(state)
         q_vals = self.q_network(state)
@@ -39,7 +39,8 @@ class DQN:
         action = np.random.choice(self.num_actions, 1, p=policy)
 
         # update q networks
-        self.update_q_networks()
+        if train:
+            self.update_q_networks()
         return action
 
     def save_transition(self, transition:Tuple):

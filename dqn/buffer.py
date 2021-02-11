@@ -1,6 +1,9 @@
 from collections import namedtuple, deque
 import numpy as np
 import random
+print(__name__)
+
+from config import BUFFER_SIZE, BATCH_SIZE
 
 
 class ReplayBuffer:
@@ -8,7 +11,7 @@ class ReplayBuffer:
     experience = namedtuple("experience", ["state", "action", "reward", "next_state", "done"])
     buffer_size = 100
 
-    def __init__(self, buffer_size: int = 100):
+    def __init__(self, buffer_size: int = BUFFER_SIZE):
         self.memory = []
         self.pointer = 0
         self.buffer_size = buffer_size
@@ -18,7 +21,7 @@ class ReplayBuffer:
         self.memory.append(self.experience(state, action, reward, next_state, done))
         self.pointer = (self.pointer + 1) % self.buffer_size
 
-    def sample(self, num_batch: int = 32):
+    def sample(self, num_batch: int = BATCH_SIZE):
         """Samples experiences from memory. num_batch determines how many experiences are sampled"""
         samples = random.sample(self.memory, k=num_batch)
         state = np.array([sample.state for sample in samples], dtype=np.float32)

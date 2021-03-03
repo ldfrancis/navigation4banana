@@ -14,8 +14,7 @@ class QNetwork(torch.nn.Module):
         self.hidden1 = torch.nn.Linear(NUM_OBS, HIDDEN_DIM[0])
         self.hidden = torch.nn.Sequential(*[torch.nn.Linear(HIDDEN_DIM[i], HIDDEN_DIM[i+1])
                                             for i in range(len(HIDDEN_DIM)-1)])
-        self.adv_layer = torch.nn.Linear(HIDDEN_DIM[-1], NUM_ACT)
-        self.val_layer = torch.nn.Linear(HIDDEN_DIM[-1], 1)
+        self.q_layer = torch.nn.Linear(HIDDEN_DIM[-1], NUM_ACT)
 
     def forward(self, x: FloatTensor):
         """Forward pass through the model, input is x"""
@@ -23,7 +22,5 @@ class QNetwork(torch.nn.Module):
         x = F.relu(x)
         x = self.hidden(x)
         x = F.relu(x)
-        adv = self.adv_layer(x)
-        val = self.val_layer(x)
-        q_val = adv + val  # adv = q_val - val
+        q_val =self.q_layer(x)  # adv = q_val - val
         return q_val

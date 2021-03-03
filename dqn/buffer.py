@@ -9,7 +9,6 @@ from config import BUFFER_SIZE, BATCH_SIZE
 class ReplayBuffer:
     """Stores experiences from agent-environment interactions and enables this experiences to be sampled"""
     experience = namedtuple("experience", ["state", "action", "reward", "next_state", "done"])
-    buffer_size = 100
 
     def __init__(self, buffer_size: int = BUFFER_SIZE):
         self.memory = []
@@ -18,7 +17,11 @@ class ReplayBuffer:
 
     def add(self, state:np.ndarray, action:np.ndarray, reward:np.ndarray, next_state:np.ndarray, done:np.ndarray):
         """Adds an experience to the buffer memory"""
-        self.memory.append(self.experience(state, action, reward, next_state, done))
+        try:
+            self.memory[self.pointer] = self.experience(state, action, reward, next_state, done)
+        except IndexError:
+            self.memory.append(self.experience(state, action, reward, next_state, done))
+        assert len(self.memory) <= self.buffer_size
         self.pointer = (self.pointer + 1) % self.buffer_size
 
     def sample(self, num_batch: int = BATCH_SIZE):

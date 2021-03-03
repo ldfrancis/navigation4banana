@@ -1,6 +1,5 @@
 import gym
 from unityagents import UnityEnvironment
-import numpy as np
 
 
 class BananaEnv(gym.Env):

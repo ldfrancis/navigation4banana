@@ -29,28 +29,41 @@ Having installed all the required packages, the unity environment files can then
 [windows 32-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86.zip) <br/>
 [windows 64-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86_64.zip) <br/>
 
+Also, the PLATFORM variable in the config.py file has to be modified accordingly.
+
 Now, all is set for the experiments
 
 ## Instructions
-To run the experiment use
+To run the experiment use the commands below:
 
-```python main.py```
+Train an agent in the environment;
+
+```python main.py train```
+
+Evaluate a trained agent
+
+```python main.py test```
 
 This would use the default configs specified in ```config.py```. The file config.py contains variables whose values are necessary to configure the environment, the dqn agent, and the experiment. Below is a sample setting for the variables in config.py
 ```
+...
 ENV_PATH = f"./banana_env/{ENV_FILE}"
 NUM_OBS = 37
 NUM_ACT = 4
 TARGET_SCORE = 13
 
 # dqn agent
-BUFFER_SIZE = 100
-BATCH_SIZE = 32
-LR = 5e-4
+BUFFER_SIZE = 10000
+BATCH_SIZE = 64
+LR = 5e-5
 GAMMA = 0.99
-TAU = 1e-2
-EPS_DECAY_STEP = 1e-1
-HIDDEN_DIM = [64, 128]
+TAU = 1e-3
+EPS_DECAY = 0.9
+HIDDEN_DIM = [64, 32]
+
 ```
 
 The experiment would continue running for several episodes till the agent achieves a score of +13 averaged over the last 100 episodes.
+
+## Report
+A report containing the results can be found [here](g)

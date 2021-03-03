@@ -4,13 +4,15 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+import os
+
 from .model import QNetwork
 from .buffer import ReplayBuffer
 from config import LR, GAMMA, TAU, BATCH_SIZE, NUM_ACT
+from pathlib import Path
 
 
 class DQN:
-
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     def __init__(self):
@@ -19,6 +21,10 @@ class DQN:
         self.buffer = ReplayBuffer()
         self.policy = defaultdict(lambda : (1/NUM_ACT)*np.ones((NUM_ACT,)))
         self.optimizer = torch.optim.Adam(self.q_network.parameters(), lr=LR)
+
+        # restore if checkpoint exists
+        if Path("./checkpoint/checkpoint.pt").exists():
+            self.restore("./checkpoint/checkpoint.pt")
 
     def take_action(self, state:np.ndarray, train=False, epsilon=0):
         # obtain q values
@@ -64,6 +70,24 @@ class DQN:
         # update target network
         for target_param, local_param in zip(self.q_network_target.parameters(), self.q_network.parameters()):
             target_param.data.copy_(TAU * local_param.data + (1.0 - TAU) * target_param.data)
+
+    def save(self, path="./checkpoint"):
+        os.makedirs(path, exist_ok=True)
+        self.checkpoint_path = path
+        self.checkpoint_path_file = f"{path}/checkpoint.pt"
+        torch.save({
+            'q_state_dict': self.q_network.state_dict(),
+            'q_target_state_dict': self.q_network_target.state_dict(),
+            'optimizer_state_dict': self.optimizer.state_dict(),
+            }, self.checkpoint_path_file )
+
+    def restore(self, path):
+        checkpoint = torch.load(path)
+        self.q_network.load_state_dict(checkpoint['q_state_dict'])
+        self.q_network_target.load_state_dict(checkpoint['q_target_state_dict'])
+        self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+
+
 
 
 

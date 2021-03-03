@@ -66,4 +66,4 @@ HIDDEN_DIM = [64, 32]
 The experiment would continue running for several episodes till the agent achieves a score of +13 averaged over the last 100 episodes.
 
 ## Report
-A report containing the results can be found [here](g)
+A report containing the results can be found [here](report.md)

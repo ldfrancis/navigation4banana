@@ -38,7 +38,7 @@ HIDDEN_DIM | list | describes the hidden layers of the MLP
 Trading was done using an adam optimizer with a learning rate of 1e-5 and batch size of 64. The DQN agents replay buffer was set to have a size of 10000.
 During training, actions were selected using an epsilon-greedy policy with epsilon starting at 1.0 and decayed by a factor of 0.9 after each episode. The discount factor was set to 0.9 and the target Q network was updated using soft updated with a tau = 1e-3
 
-All these parameters can be adjusted in the [config.py](dqn/config.py) file.
+All these parameters can be adjusted in the [config.py](config.py) file.
 
 
 **Results**
